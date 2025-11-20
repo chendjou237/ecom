@@ -33,8 +33,8 @@ const ProductCard = ({ product }: { product: ProductType }) => {
     addToCart({
       ...product,
       quantity: 1,
-      selectedSize: productTypes.size,
-      selectedColor: productTypes.color,
+      selectedSize: productTypes.size ,
+      selectedColor: productTypes.color ,
     });
     toast.success("Product added to cart")
   };
@@ -45,7 +45,7 @@ const ProductCard = ({ product }: { product: ProductType }) => {
       <Link href={`/products/${product.id}`}>
         <div className="relative aspect-[2/3]">
           <Image
-            src={product.images[productTypes.color]}
+            src={product.images?.[productTypes.color] || ""}
             alt={product.name}
             fill
             className="object-cover hover:scale-105 transition-all duration-300"

@@ -11,13 +11,13 @@ const PaymentForm = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<PaymentFormInputs>({
-    resolver: zodResolver(paymentFormSchema),
+    resolver: zodResolver(paymentFormSchema as any),
   });
 
   const router = useRouter();
 
   const handlePaymentForm: SubmitHandler<PaymentFormInputs> = (data) => {
-    
+
   };
 
   return (
