@@ -1,7 +1,9 @@
-import express, {Response, Request} from "express"
+import express, {Response, Request, NextFunction} from "express"
 import cors from "cors"
 import { clerkMiddleware, getAuth } from '@clerk/express'
-
+import { shouldBeUser } from "./middleware/authMiddle.js"
+import  productRouter from "./routes/product.route.js"
+import  categoryRouter from "./routes/category.route.js"
 const app = express()
 app.use(cors(
 {
@@ -9,8 +11,14 @@ app.use(cors(
    credentials: true
 }
 ))
+app.use(express.json())
 app.use(clerkMiddleware())
 
+app.use((err:any, req:Request,res: Response, next: NextFunction)=>{
+   console.log(err.stack)
+   res.status(500).json({message: err.message || "Internal Server Error"})
+
+})
 app.get("/health", (req:Request, res: Response)=>{
    res.status(200).json({
    status: 'ok',
@@ -19,18 +27,16 @@ app.get("/health", (req:Request, res: Response)=>{
   })
 })
 
-app.get("/test", (req, res) => {
-     const {userId} = getAuth(req)
+app.get("/test",shouldBeUser,  (req, res) => {
 
-      if(!userId){
-         return res.status(401).json({
-            message: "You are not logged in"
-         })
-      }
    res.json({
-      message: "Product service authenticated"
+      message: "Product service authenticated",
+      userId: req.userId
    })
 })
+
+app.use("/products", productRouter)
+app.use("/categories", categoryRouter)
 
 app.listen(
    8000, ()=>{
