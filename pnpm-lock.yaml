@@ -359,6 +359,13 @@ importers:
         version: 7.0.0(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.3)
 
   packages/types:
+    dependencies:
+      '@repo/product-db':
+        specifier: workspace:*
+        version: link:../product-db
+      zod:
+        specifier: ^4.0.14
+        version: 4.1.12
     devDependencies:
       '@repo/typescript-config':
         specifier: workspace:*
