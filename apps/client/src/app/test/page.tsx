@@ -28,7 +28,7 @@ export default async function TestPage() {
    });
    const dataProduct = await resProduct.json()
 
-   console.log(dataProduct);
+   console.log(token);
 
   return (
     <div>Test Page fucker</div>

@@ -28,10 +28,10 @@ app.get("/health", (req:Request, res: Response)=>{
 })
 
 app.get("/test",shouldBeUser,  (req, res) => {
-
+const token  =
    res.json({
       message: "Product service authenticated",
-      userId: req.userId
+      userId: req.userId,
    })
 })
 
