@@ -22,7 +22,7 @@ return error;
 export const getStripeProductPrice = async (productId: number) =>{
    try {
       const res = await stripe.prices.list({
-         product: "123",
+         product: productId.toString(),
       });
       return res.data[0]?.unit_amount;
    } catch (error) {

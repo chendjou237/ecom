@@ -1,9 +1,9 @@
 "use client";
 
-import PaymentForm from "@/components/PaymentForm";
 import ShippingForm from "@/components/ShippingForm";
+import StripePaymentForm from "@/components/StripePaymentForm";
 import useCartStore from "@/stores/cartStore";
-import { CartItemsType, ShippingFormInputs } from "@/types";
+import { CartItemsType, ShippingFormInputs } from "@repo/types";
 import { ArrowRight, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -124,7 +124,7 @@ const CartPage = () => {
         {/* STEPS */}
         <div className="w-full lg:w-7/12 shadow-lg border-1 border-gray-100 p-8 rounded-lg flex flex-col gap-8">
           {activeStep === 1 ? (
-            cart.map((item) => (
+            cart.map((item:any) => (
               // SINGLE CART ITEM
               <div
                 className="flex items-center justify-between"
@@ -170,7 +170,7 @@ const CartPage = () => {
           ) : activeStep === 2 ? (
             <ShippingForm setShippingForm={setShippingForm} />
           ) : activeStep === 3 && shippingForm ? (
-            <PaymentForm />
+            <StripePaymentForm shippingForm={shippingForm}/>
           ) : (
             <p className="text-sm text-gray-500">
               Please fill in the shipping form to continue.
@@ -186,7 +186,7 @@ const CartPage = () => {
               <p className="font-medium">
                 $
                 {cart
-                  .reduce((acc, item) => acc + item.price * item.quantity, 0)
+                  .reduce((acc:any, item:any) => acc + item.price * item.quantity, 0)
                   .toFixed(2)}
               </p>
             </div>
@@ -204,7 +204,7 @@ const CartPage = () => {
               <p className="font-medium">
                 $
                 {cart
-                  .reduce((acc, item) => acc + item.price * item.quantity, 0)
+                  .reduce((acc:any, item:any) => acc + item.price * item.quantity, 0)
                   .toFixed(2)}
               </p>
             </div>

@@ -16,6 +16,9 @@ export const shippingFormSchema = z.object({
   address: z.string().min(1, "Address is required!"),
   city: z.string().min(1, "City is required!"),
 });
+export type ShippingFormInputs = z.infer<typeof shippingFormSchema>;
+
+
  export type CartStoreStateType = {
   cart: CartItemsType;
   hasHydrated: boolean;

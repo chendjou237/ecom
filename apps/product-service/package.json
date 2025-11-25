@@ -13,15 +13,16 @@
   "license": "ISC",
   "dependencies": {
     "@clerk/express": "^1.7.51",
+    "@repo/product-db": "workspace:*",
+    "@stripe/react-stripe-js": "^5.4.0",
+    "@stripe/stripe-js": "^8.5.2",
     "cors": "^2.8.5",
-    "express": "^5.0.3",
-    "@repo/product-db": "workspace:*"
+    "express": "^5.0.3"
   },
   "devDependencies": {
-    "@repo/typescript-config": "workspace:*",
     "@repo/types": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.5"
-
   }
 }

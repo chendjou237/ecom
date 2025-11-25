@@ -1,19 +1,23 @@
 import { serve } from '@hono/node-server'
-import { timeStamp } from 'console';
 import { Hono } from 'hono'
-import { clerkMiddleware, getAuth } from '@hono/clerk-auth'
+import { clerkMiddleware, } from '@hono/clerk-auth'
+import sessionRoute from './routes/session.route.js';
+import { cors } from "hono/cors";
 import { shouldBeUser } from './middleware/authMiddleware.js';
-import stripe from './utils/stripe.js';
+
 
 const app = new Hono()
 app.use('*', clerkMiddleware())
-app.get('/test',shouldBeUser,  (c) => {
+app.use('*', cors({
+  origin: ['http://localhost:3001', 'r.stripe.com']
+}))
+// app.get('/test',shouldBeUser,  (c) => {
 
-  return c.json({
-   message: "Payment service authenticated",
-   userId: c.get('userId')
-  });
-})
+//   return c.json({
+//    message: "Payment service authenticated",
+//    userId: c.get('userId')
+//   });
+// })
 app.get('/health', (c) => {
   return c.json({
    status: 'ok',
@@ -21,7 +25,7 @@ app.get('/health', (c) => {
    timeStamp: Date.now()
   });
 })
-
+app.route('/sessions',  sessionRoute )
 // app.post("/create-stripe-product", async (c) => {
 //    const res = await stripe.products.create({
 //       id:'123',
