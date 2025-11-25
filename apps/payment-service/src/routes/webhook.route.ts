@@ -1,11 +1,11 @@
 import { Hono } from "hono";
 import { Stripe } from "stripe";
 import stripe from "../utils/stripe.js";
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET_KEY;
+const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET_KEY as string;
 const webhookRoute = new Hono()
 
-webhookRoute.post('/webhook', async (c) => {
-   const body = await c.req.json()
+webhookRoute.post('/stripe', async (c) => {
+   const body = await c.req.text();
    const sig = c.req.header('stripe-signature');
       let event: Stripe.Event;
 
@@ -13,7 +13,7 @@ webhookRoute.post('/webhook', async (c) => {
          event = stripe.webhooks.constructEvent(
             body,
             sig!,
-            webhookSecret!
+            webhookSecret
          );
       } catch (_) {
          console.log("webhook verification failed!");
@@ -25,14 +25,12 @@ webhookRoute.post('/webhook', async (c) => {
             const session = event.data.object as Stripe.Checkout.Session;
             const lineItems = await stripe.checkout.sessions.listLineItems(session.id);
 
-            //TODO: Create Order
-            console.log("WEBHOOK RECEIVED", session);
 
             break;
          default:
             console.log(`Unhandled event type: ${event.type}`);
 
-      
+
 
    }
 
@@ -41,3 +39,5 @@ webhookRoute.post('/webhook', async (c) => {
 }
 
 )
+
+export default webhookRoute;

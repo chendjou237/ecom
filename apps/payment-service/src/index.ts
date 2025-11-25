@@ -4,6 +4,7 @@ import { clerkMiddleware, } from '@hono/clerk-auth'
 import sessionRoute from './routes/session.route.js';
 import { cors } from "hono/cors";
 import { shouldBeUser } from './middleware/authMiddleware.js';
+import webhookRoute from './routes/webhook.route.js';
 
 
 const app = new Hono()
@@ -26,6 +27,8 @@ app.get('/health', (c) => {
   });
 })
 app.route('/sessions',  sessionRoute )
+
+app.route('/webhooks', webhookRoute )
 // app.post("/create-stripe-product", async (c) => {
 //    const res = await stripe.products.create({
 //       id:'123',
