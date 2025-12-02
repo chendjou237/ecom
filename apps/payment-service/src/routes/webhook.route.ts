@@ -29,9 +29,6 @@ webhookRoute.post('/stripe', async (c) => {
             break;
          default:
             console.log(`Unhandled event type: ${event.type}`);
-
-
-
    }
 
    return c.json({ received: true });
