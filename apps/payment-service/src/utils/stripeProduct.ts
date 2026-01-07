@@ -11,11 +11,15 @@ export const createStripeProduct = async (item: StripeProductType) =>{
             unit_amount: item.price * 100,
          },
       });
+      console.log("Stripe product created successfully:", res.id);
       return res;
    } catch (error) {
-console.log(error);
-return error;
-
+      console.error("Failed to create Stripe product:", {
+         productId: item.id,
+         productName: item.name,
+         error: error instanceof Error ? error.message : error
+      });
+      throw error; // Throw instead of returning to properly signal failure
    }
 }
 
@@ -26,9 +30,11 @@ export const getStripeProductPrice = async (productId: number) =>{
       });
       return res.data[0]?.unit_amount;
    } catch (error) {
-console.log(error);
-return error;
-
+      console.error("Failed to get Stripe product price:", {
+         productId,
+         error: error instanceof Error ? error.message : error
+      });
+      throw error;
    }
 }
 
@@ -36,16 +42,17 @@ export const deleteStripeProduct = async (id: number) =>{
    try {
       const res = await stripe.products.del(id.toString());
       if (res.deleted) {
-         console.log('product deleted from stripe:', id);
-
+         console.log('Stripe product deleted successfully:', id);
          return res;
       }
       else{
-         throw "failed to delete product from stripe"
+         throw new Error("Failed to delete product from Stripe")
       }
    } catch (error) {
-console.log(error);
-return error;
-
+      console.error("Failed to delete Stripe product:", {
+         productId: id,
+         error: error instanceof Error ? error.message : error
+      });
+      throw error;
    }
 }

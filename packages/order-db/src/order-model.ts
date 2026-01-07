@@ -26,7 +26,7 @@ const OrderSchema = new Schema({
     enum: OrderStatus
 
   },
-  product: {
+  products: {
     type: [{
       name:{type:String, required:true},
       price:{type:Number, required:true},

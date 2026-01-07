@@ -60,7 +60,7 @@ const start = async () => {
       ])
       await runKafkaSubscriptions()
 serve({
-  fetch: app.fetch,
+  fetch: app.fetch, 
   port: 8002
 }, (info) => {
   console.log(`Payment service is running on port 8002`);
