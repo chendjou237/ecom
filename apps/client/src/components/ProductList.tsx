@@ -1,4 +1,4 @@
-import { ProductsType } from "@repo/types";
+import { ProductsType, ProductType } from "@repo/types";
 import Categories from "./Categories";
 import ProductCard from "./ProductCard";
 import Link from "next/link";
@@ -6,8 +6,14 @@ import Filter from "./Filter";
 
 // TEMPORARY
 
-
-const ProductList = ({ category,params }: { category: string, params:"homepage" | "products" }) => {
+const fetchData = async ({category, sort, search, params}: {category?: string, sort?: string, search?: string, params:"homepage" | "products"}) => {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/products?${category ? `category=${category}` : ""}&${search ? `search=${search}` : ""}&${`sort=${sort || "newest"}`}&${params === "products" ? "limit=8" : ""}`);
+    const data:ProductType[] = await res.json();
+    return data;
+}
+const ProductList = async({ category,params, sort, search }: { category: string, params:"homepage" | "products", sort?: string, search?: string }) => {
+  const products =
+   await fetchData({category, params, sort, search});
   return (
     <div className="w-full">
       <Categories />
