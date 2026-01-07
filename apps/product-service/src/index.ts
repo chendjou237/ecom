@@ -4,6 +4,7 @@ import { clerkMiddleware, getAuth } from '@clerk/express'
 import { shouldBeUser } from "./middleware/authMiddle.js"
 import  productRouter from "./routes/product.route.js"
 import  categoryRouter from "./routes/category.route.js"
+import { consumer, producer } from "./utils/kafka.js"
 const app = express()
 app.use(cors(
 {
@@ -37,9 +38,21 @@ const token  =
 
 app.use("/products", productRouter)
 app.use("/categories", categoryRouter)
+const start = async ()=>{
+try {
+      Promise.all([
+         producer.connect(),
+         consumer.connect()
+      ])
+   app.listen(
+      8000, ()=>{
 
-app.listen(
-   8000, ()=>{
-      console.log("Server is running on port 8000");
-   }
-)
+         console.log("Server is running on port 8000");
+      })
+} catch (error) {
+console.log(error);
+process.exit(1);
+}
+}
+
+start()

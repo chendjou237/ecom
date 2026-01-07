@@ -1,7 +1,7 @@
 import { auth } from '@clerk/nextjs/server';
 import React from 'react'
 
-export default async function TestPage() {
+export default async function Page() {
    const {getToken} = await auth()
    const token = await getToken();
 

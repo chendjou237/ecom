@@ -34,7 +34,6 @@ export const shouldBeAdmin = (req: Request, res: Response, next: NextFunction) =
          return res.status(403).send({
             message: "You are not an admin"
          })
-
       }
 
   req.userId = auth.userId;

@@ -17,7 +17,8 @@
     "@stripe/react-stripe-js": "^5.4.0",
     "@stripe/stripe-js": "^8.5.2",
     "cors": "^2.8.5",
-    "express": "^5.0.3"
+    "express": "^5.0.3",
+    "@repo/kafka": "workspace:*"
   },
   "devDependencies": {
     "@repo/types": "workspace:*",

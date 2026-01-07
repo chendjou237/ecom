@@ -31,3 +31,21 @@ return error;
 
    }
 }
+
+export const deleteStripeProduct = async (id: number) =>{
+   try {
+      const res = await stripe.products.del(id.toString());
+      if (res.deleted) {
+         console.log('product deleted from stripe:', id);
+
+         return res;
+      }
+      else{
+         throw "failed to delete product from stripe"
+      }
+   } catch (error) {
+console.log(error);
+return error;
+
+   }
+}
