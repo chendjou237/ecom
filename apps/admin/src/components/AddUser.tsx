@@ -24,6 +24,7 @@ import {
    FormMessage,
 } from "./ui/form";
 import { Input } from "./ui/input";
+import { useRouter } from "next/navigation";
 
 
 
@@ -43,6 +44,7 @@ const AddUser = () => {
 
 
     const {getToken} = useAuth();
+ const router = useRouter();
 
     const mutation = useMutation({
      mutationFn: async (newUser:z.infer<typeof UserFormSchema>) => {
@@ -64,6 +66,7 @@ const AddUser = () => {
      onSuccess:()=>{
         toast.success("User created successfully");
         form.reset();
+        router.refresh();
      },
      onError: (error)=>{
         toast.error(error.message);

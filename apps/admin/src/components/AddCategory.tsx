@@ -62,7 +62,7 @@ const AddCategory = () => {
    onError: (error)=>{
       toast.error(error.message);
    }
-  })
+  });
   return (
     <SheetContent>
       <SheetHeader>
