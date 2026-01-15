@@ -1,66 +1,92 @@
 "use client";
 
 import {
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
+   SheetContent,
+   SheetDescription,
+   SheetHeader,
+   SheetTitle,
 } from "@/components/ui/sheet";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { useAuth } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { UserFormSchema } from "@repo/types";
+import { useMutation } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import { z } from "zod";
+import { Button } from "./ui/button";
 import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+   Form,
+   FormControl,
+   FormDescription,
+   FormField,
+   FormItem,
+   FormLabel,
+   FormMessage,
 } from "./ui/form";
 import { Input } from "./ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Button } from "./ui/button";
 
-const formSchema = z.object({
-  fullName: z
-    .string()
-    .min(2, { message: "Full name must be at least 2 characters!" })
-    .max(50),
-  email: z.string().email({ message: "Invalid email address!" }),
-  phone: z.string().min(10).max(15),
-  address: z.string().min(2),
-  city: z.string().min(2),
-});
+
+
+
 
 const AddUser = () => {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof UserFormSchema>>({
+    resolver: zodResolver(UserFormSchema),
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      username: "",
+      emailAddress: [],
+      password: "",
+    }
   });
+
+
+    const {getToken} = useAuth();
+
+    const mutation = useMutation({
+     mutationFn: async (newUser:z.infer<typeof UserFormSchema>) => {
+      console.log(newUser);
+        const token = await getToken();
+        const res = await fetch(`${process.env.NEXT_PUBLIC_AUTH_SERVICE_URL}/users`, {
+           method: "POST",
+           headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
+           },
+           body: JSON.stringify(newUser),
+        });
+        if (!res.ok){
+           throw new Error("Failed to create new user");
+        }
+        return res.json();
+     },
+     onSuccess:()=>{
+        toast.success("User created successfully");
+        form.reset();
+     },
+     onError: (error)=>{
+        toast.error(error.message);
+     }
+    })
   return (
     <SheetContent>
       <SheetHeader>
         <SheetTitle className="mb-4">Add User</SheetTitle>
         <SheetDescription asChild>
           <Form {...form}>
-            <form className="space-y-8">
+            <form className="space-y-8" onSubmit={form.handleSubmit((data) => mutation.mutate(data))}>
               <FormField
                 control={form.control}
-                name="fullName"
+                name="firstName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Full Name</FormLabel>
+                    <FormLabel>First Name</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
                     <FormDescription>
-                      Enter user full name.
+                      Enter user First name.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -68,12 +94,47 @@ const AddUser = () => {
               />
               <FormField
                 control={form.control}
-                name="email"
+                name="lastName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>Last Name</FormLabel>
                     <FormControl>
                       <Input {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      Enter user Last name.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Username</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      Enter username.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="emailAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email Addresses</FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="email1@gmail.com, email2@gmail.com" onChange={e=>{const emails = e.target.value.split(",").map((email) => email.trim()).filter((email) => email);
+                      field.onChange(emails);
+
+                      }}/>
                     </FormControl>
                     <FormDescription>
                       Only admin can see your email.
@@ -84,53 +145,22 @@ const AddUser = () => {
               />
               <FormField
                 control={form.control}
-                name="phone"
+                name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Phone</FormLabel>
+                    <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} type="password"/>
                     </FormControl>
                     <FormDescription>
-                      Only admin can see your phone number (optional)
+                      Enter User Password
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="address"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Address</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormDescription>
-                      Enter user address (optional)
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="city"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>City</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormDescription>
-                      Enter user city (optional)
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button type="submit">Submit</Button>
+
+              <Button type="submit" disabled={mutation.isPending} className="disabled:opacity-50 disabled:cursor-not-allowed">{mutation.isPending ? "Submitting..." : "Submit"}</Button>
             </form>
           </Form>
         </SheetDescription>

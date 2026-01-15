@@ -8,7 +8,7 @@ import { consumer, producer } from "./utils/kafka.js"
 const app = express()
 app.use(cors(
 {
-   origin: ["http://localhost:3002", "http://localhost:3003"],
+   origin: ["http://localhost:3002", "http://localhost:3003", "http://localhost:3000"],
    credentials: true
 }
 ))
